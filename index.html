@@ -1,27 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>車輛裝備器材清單建檔</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, 'LiHei Pro', sans-serif;
+      background-color: #f4f7f6;
+      padding: 15px;
+      margin: 0;
+      color: #333;
+    }
+    .form-container {
+      background-color: #ffffff;
+      padding: 25px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    h2 {
+      text-align: center;
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 22px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .form-group { margin-bottom: 18px; }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      color: #4a4a4a;
+    }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background-color: #f8f9fa;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+    input[type="file"] { width: 100%; padding: 10px 0; font-size: 15px; }
+    textarea { resize: vertical; }
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+    button:disabled { background-color: #6c757d; cursor: not-allowed; }
+    
+    /* 平板上方推播通知樣式 */
+    #push-notification {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 1000;
+      transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #push-notification.show { top: 20px; }
+
+    /* 懸浮：傳送訊息給值班台按鈕 */
+    .fab-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #dc3545;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(220,53,69,0.4);
+      cursor: pointer;
+      z-index: 999;
+      font-size: 24px;
+    }
+    
+    /* 訊息輸入對話框 */
+    #message-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1001;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+    }
+    .modal-content textarea { margin-bottom: 15px; }
+    .btn-group { display: flex; gap: 10px; }
+    .btn-group button { margin-top: 0; }
+    .btn-cancel { background-color: #6c757d; }
+  </style>
+</head>
+<body>
+
+<!-- 上方推播通知區塊 -->
+<div id="push-notification">
+  <span>🔔</span> <span id="notification-text">推播訊息</span>
+</div>
+
+<div class="form-container">
+  <h2>裝備器材建檔</h2>
+  <form id="inventory-form">
+    
+    <div class="form-group">
+      <label>填寫人員：</label>
+      <select name="submitted_by" id="user_select" required>
+        <option value="" disabled selected>請選擇人員</option>
+        <option value="王大明">王大明</option>
+        <option value="李小華">李小華</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>擺放車輛：</label>
+      <select name="vehicle_name" required>
+        <option value="" disabled selected>請選擇車輛</option>
+        <option value="救護車-ABC-123">救護車 (ABC-123)</option>
+        <option value="水箱車-DEF-456">水箱車 (DEF-456)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>擺放區域 (大方向)：</label>
+      <select name="placement_area" required>
+        <option value="" disabled selected>請選擇大區域</option>
+        <option value="駕駛側">駕駛側</option>
+        <option value="副駕駛側">副駕駛側</option>
+        <option value="駕駛艙">駕駛艙</option>
+        <option value="車頂">車頂</option>
+        <option value="後車廂">後車廂</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>詳細位置 (選填)：</label>
+      <input type="text" name="placement_detail" placeholder="例如：第二層抽屜">
+    </div>
+
+    <div class="form-group">
+      <label>器材項目：</label>
+      <select name="equipment_name" required>
+        <option value="" disabled selected>請選擇器材</option>
+        <option value="軍刀鋸">軍刀鋸</option>
+        <option value="油壓破壞剪">油壓破壞剪</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>數量：</label>
+      <input type="number" name="quantity" min="1" value="1" required>
+    </div>
+
+    <div class="form-group">
+      <label>現場拍照 (佐證)：</label>
+      <input type="file" name="equipment_image" accept="image/*" required>
+    </div>
+
+    <div class="form-group">
+      <label>備註 (選填)：</label>
+      <textarea name="remarks" rows="2" placeholder="例如：需要保養、有損壞..."></textarea>
+    </div>
+
+    <button type="submit" id="submit-btn">確認建檔</button>
+  </form>
+</div>
+
+<!-- 懸浮按鈕：傳送訊息給值班台 -->
+<div class="fab-btn" onclick="openMessageModal()">💬</div>
+
+<!-- 訊息對話框 -->
+<div id="message-modal">
+  <div class="modal-content">
+    <h3 style="margin-top:0; color:#dc3545;">傳送訊息給值班台</h3>
+    <textarea id="desk-message" rows="4" placeholder="請輸入要回報給值班台的狀況..."></textarea>
+    <div class="btn-group">
+      <button class="btn-cancel" onclick="closeMessageModal()">取消</button>
+      <button style="background-color: #dc3545;" onclick="sendMessageToDesk()">傳送</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // 攔截原本的表單送出動作
-  const form = document.querySelector('form');
-  const submitBtn = document.querySelector('button[type="submit"]');
+  // ⚠️⚠️⚠️ 務必將下方的 URL 替換成你的 GAS 網頁應用程式網址 ⚠️⚠️⚠️
+  const GAS_URL = '請貼上你的_GAS_網頁應用程式網址';
 
-  form.addEventListener('submit', function(e) {
-    e.preventDefault(); // 阻止傳統網頁跳轉
+  // 顯示上方推播功能
+  function showPushNotification(text, color = '#28a745') {
+    const pushDiv = document.getElementById('push-notification');
+    document.getElementById('notification-text').innerText = text;
+    pushDiv.style.backgroundColor = color;
+    pushDiv.classList.add('show');
     
-    // 改變按鈕狀態，讓使用者知道正在處理
-    submitBtn.textContent = '上傳與建檔中，請稍候...';
+    // 3.5秒後自動收起推播
+    setTimeout(() => {
+      pushDiv.classList.remove('show');
+    }, 3500);
+  }
+
+  // 表單送出處理 (建檔)
+  document.getElementById('inventory-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.textContent = '圖片上傳與建檔中...';
     submitBtn.disabled = true;
-    submitBtn.style.backgroundColor = '#6c757d'; // 變灰色
 
-    // 取得圖片檔案
-    const fileInput = document.querySelector('input[type="file"]');
-    const file = fileInput.files[0];
-    
-    // 將圖片讀取為 Base64
+    const file = document.querySelector('input[type="file"]').files[0];
     const reader = new FileReader();
+    
     reader.onload = function(event) {
-      const base64Data = event.target.result;
-      
-      // 收集所有填寫的資料
       const payload = {
+        action: 'inventory',
         submitted_by: document.querySelector('[name="submitted_by"]').value,
         vehicle_name: document.querySelector('[name="vehicle_name"]').value,
         placement_area: document.querySelector('[name="placement_area"]').value,
@@ -29,45 +257,61 @@
         equipment_name: document.querySelector('[name="equipment_name"]').value,
         quantity: document.querySelector('[name="quantity"]').value,
         remarks: document.querySelector('[name="remarks"]').value,
-        // 照片資料
-        imageFile: base64Data,
+        imageFile: event.target.result,
         imageName: file.name,
         imageMime: file.type
       };
 
-      // ⚠️ 請將下方的 URL 替換成你剛剛在 GAS 拿到的「網頁應用程式網址」
-      const GAS_URL = '你的_GAS_網頁應用程式網址_貼在這裡';
+      fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(res => res.json())
+        .then(result => {
+          if (result.status === 'success') {
+            showPushNotification('✅ 裝備建檔成功！已存入試算表。');
+            document.getElementById('inventory-form').reset();
+          } else {
+            showPushNotification('❌ 建檔失敗', '#dc3545');
+          }
+        })
+        .catch(() => showPushNotification('❌ 網路連線錯誤', '#dc3545'))
+        .finally(() => {
+          submitBtn.textContent = '確認建檔';
+          submitBtn.disabled = false;
+        });
+    };
+    reader.readAsDataURL(file);
+  });
 
-      // 傳送給 Google
-      fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
+  // 值班台訊息功能
+  function openMessageModal() { document.getElementById('message-modal').style.display = 'flex'; }
+  function closeMessageModal() { 
+    document.getElementById('message-modal').style.display = 'none'; 
+    document.getElementById('desk-message').value = '';
+  }
+
+  function sendMessageToDesk() {
+    const msg = document.getElementById('desk-message').value;
+    const user = document.getElementById('user_select').value || '未知人員';
+    if (!msg.trim()) { alert('請輸入訊息！'); return; }
+
+    closeMessageModal();
+    showPushNotification('正在傳送訊息給值班台...', '#ffc107');
+
+    const payload = {
+      action: 'sendMessage',
+      sender: user,
+      message: msg
+    };
+
+    fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(res => res.json())
       .then(result => {
         if (result.status === 'success') {
-          alert('✅ 裝備建檔成功！');
-          form.reset(); // 清空表單，方便建檔下一個
-        } else {
-          alert('❌ 建檔失敗：' + result.message);
+          showPushNotification('📣 訊息已成功送達值班台！');
         }
       })
-      .catch(error => {
-        alert('❌ 網路連線錯誤，請重試！');
-      })
-      .finally(() => {
-        // 恢復按鈕狀態
-        submitBtn.textContent = '確認建檔';
-        submitBtn.disabled = false;
-        submitBtn.style.backgroundColor = '#007bff';
-      });
-    };
-    
-    // 執行讀取
-    if (file) {
-      reader.readAsDataURL(file);
-    } else {
-      alert("請選擇照片！");
-    }
-  });
+      .catch(() => showPushNotification('❌ 傳送失敗，請重試', '#dc3545'));
+  }
 </script>
+
+</body>
+</html>
