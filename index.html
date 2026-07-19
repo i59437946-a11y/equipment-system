@@ -15,6 +15,9 @@
     button { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     button:disabled { background-color: #6c757d; cursor: not-allowed; }
     
+    /* 讓搜尋框的提示文字顏色淡一點 */
+    input::-webkit-input-placeholder { color: #aaa; }
+    
     /* 平板上方推播通知 */
     #push-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 15px 30px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 16px; font-weight: bold; z-index: 1000; transition: top 0.4s ease; display: flex; align-items: center; gap: 10px; }
     #push-notification.show { top: 20px; }
@@ -35,41 +38,43 @@
   <h2>裝備器材建檔</h2>
   <form id="inventory-form">
     
+    <!-- 改為可搜尋的輸入框 (姓名) -->
     <div class="form-group">
-      <label>填寫人員：</label>
-      <select name="submitted_by" id="user_select" required>
-        <option value="" disabled selected>請選擇人員</option>
-        <option value="林威巡">林威巡</option>
-        <option value="林信叡">林信叡</option>
-        <option value="陳先鵬">陳先鵬</option>
-        <option value="郭彥廷">郭彥廷</option>
-        <option value="郭蕙瑄">郭蕙瑄</option>
-        <option value="徐偉騰">徐偉騰</option>
-        <option value="張庭睿">張庭睿</option>
-        <option value="劉偉傑">劉偉傑</option>
-        <option value="温傑">温傑</option>
-        <option value="黃竣紹">黃竣紹</option>
-        <option value="李政軒">李政軒</option>
-        <option value="張家銘">張家銘</option>
-        <option value="詹旆">詹旆</option>
-        <option value="林威呈">林威呈</option>
-        <option value="邱柏綸">邱柏綸</option>
-        <option value="許添貴">許添貴</option>
-        <option value="吳士新">吳士新</option>
-        <option value="陳昭勳">陳昭勳</option>
-        <option value="蕭偉呈">蕭偉呈</option>
-        <option value="張育偉">張育偉</option>
-        <option value="簡丞毅">簡丞毅</option>
-        <option value="張雅雯">張雅雯</option>
-        <option value="戴明慶">戴明慶</option>
-        <option value="黃國城">黃國城</option>
-        <option value="彭健哲">彭健哲</option>
-        <option value="張萱讚">張萱讚</option>
-        <option value="蔡治文">蔡治文</option>
-        <option value="林柏川">林柏川</option>
-      </select>
+      <label>填寫人員 (可搜尋)：</label>
+      <input type="text" name="submitted_by" id="user_select" list="user_list" placeholder="請點擊輸入姓名..." required autocomplete="off">
+      <datalist id="user_list">
+        <option value="林威巡"></option>
+        <option value="林信叡"></option>
+        <option value="陳先鵬"></option>
+        <option value="郭彥廷"></option>
+        <option value="郭蕙瑄"></option>
+        <option value="徐偉騰"></option>
+        <option value="張庭睿"></option>
+        <option value="劉偉傑"></option>
+        <option value="温傑"></option>
+        <option value="黃竣紹"></option>
+        <option value="李政軒"></option>
+        <option value="張家銘"></option>
+        <option value="詹旆"></option>
+        <option value="林威呈"></option>
+        <option value="邱柏綸"></option>
+        <option value="許添貴"></option>
+        <option value="吳士新"></option>
+        <option value="陳昭勳"></option>
+        <option value="蕭偉呈"></option>
+        <option value="張育偉"></option>
+        <option value="簡丞毅"></option>
+        <option value="張雅雯"></option>
+        <option value="戴明慶"></option>
+        <option value="黃國城"></option>
+        <option value="彭健哲"></option>
+        <option value="張萱讚"></option>
+        <option value="蔡治文"></option>
+        <option value="林柏川"></option>
+      </datalist>
     </div>
 
+    <!-- 車輛數量較少，維持下拉選單較不易打錯字 -->
     <div class="form-group">
       <label>擺放車輛：</label>
       <select name="vehicle_name" required>
@@ -99,191 +104,127 @@
       <input type="text" name="placement_detail" placeholder="例如：第二層抽屜、座椅下方">
     </div>
 
+    <!-- 改為可搜尋的輸入框 (器材名稱) -->
     <div class="form-group">
-      <label>器材項目：</label>
-      <select name="equipment_name" required>
-        <option value="" disabled selected>請選擇器材</option>
+      <label>器材項目 (可搜尋關鍵字)：</label>
+      <input type="text" name="equipment_name" list="equipment_list" placeholder="請點擊輸入器材名稱..." required autocomplete="off">
+      <datalist id="equipment_list">
         
         <!-- 火災類 -->
-        <optgroup label="火災-強制進入-破壞">
-          <option value="三用撬棒">三用撬棒</option>
-          <option value="圓盤切割器">圓盤切割器</option>
-          <option value="開門器(門鎖破壞器)">開門器(門鎖破壞器)</option>
-          <option value="軍刀鋸">軍刀鋸</option>
-          <option value="鐵捲門撐開器">鐵捲門撐開器</option>
-          <option value="鋼筋剪斷器">鋼筋剪斷器</option>
-          <option value="油壓剪">油壓剪</option>
-          <option value="避電剪">避電剪</option>
-          <option value="斧頭">斧頭</option>
-          <option value="美式八角鎚">美式八角鎚</option>
-        </optgroup>
-
-        <optgroup label="火災-強制進入-消防梯">
-          <option value="雙節梯">雙節梯</option>
-          <option value="三聯梯(關東梯)">三聯梯(關東梯)</option>
-          <option value="三節梯">三節梯</option>
-          <option value="掛梯">掛梯</option>
-        </optgroup>
-
-        <optgroup label="火災-水源佔據">
-          <option value="竹籠">竹籠</option>
-          <option value="濾網">濾網</option>
-          <option value="4吋雙母接頭">4吋雙母接頭</option>
-          <option value="水帶護橋">水帶護橋</option>
-          <option value="進水軟管">進水軟管</option>
-          <option value="移動式幫浦">移動式幫浦</option>
-          <option value="消防栓開關把手">消防栓開關把手</option>
-          <option value="地下式消防栓立管">地下式消防栓立管</option>
-        </optgroup>
-
-        <optgroup label="火災-滅火攻擊及搜索">
-          <option value="熱顯像儀">熱顯像儀</option>
-          <option value="渦輪瞄子">渦輪瞄子</option>
-          <option value="分水器">分水器</option>
-          <option value="合水器">合水器</option>
-          <option value="射水砲塔">射水砲塔</option>
-          <option value="可拆式朝天瞄">可拆式朝天瞄</option>
-          <option value="導光索">導光索</option>
-          <option value="高樓佈線包">高樓佈線包</option>
-          <option value="定位拉力繩">定位拉力繩</option>
-          <option value="定位水帶環">定位水帶環</option>
-          <option value="引導主繩">引導主繩</option>
-          <option value="消防救災用底盤瞄子">消防救災用底盤瞄子</option>
-          <option value="防火毯">防火毯</option>
-        </optgroup>
-
-        <optgroup label="火災-通風排煙">
-          <option value="排煙機">排煙機</option>
-        </optgroup>
-
-        <optgroup label="火災-消防人員救援">
-          <option value="AIRBAG">AIRBAG</option>
-          <option value="緊急救援板">緊急救援板</option>
-        </optgroup>
-
-        <optgroup label="火災-後勤器材">
-          <option value="氣瓶">氣瓶</option>
-          <option value="發電機">發電機</option>
-          <option value="環場照明燈">環場照明燈</option>
-          <option value="照明燈">照明燈</option>
-          <option value="空拍機">空拍機</option>
-          <option value="大聲公">大聲公</option>
-          <option value="過載保護電纜捲盤">過載保護電纜捲盤</option>
-          <option value="防水擋板">防水擋板</option>
-          <option value="電動車快速搶救水袋">電動車快速搶救水袋</option>
-        </optgroup>
+        <option value="三用撬棒">火災-強制進入</option>
+        <option value="圓盤切割器">火災-強制進入</option>
+        <option value="開門器(門鎖破壞器)">火災-強制進入</option>
+        <option value="軍刀鋸">火災-強制進入</option>
+        <option value="鐵捲門撐開器">火災-強制進入</option>
+        <option value="鋼筋剪斷器">火災-強制進入</option>
+        <option value="油壓剪">火災-強制進入</option>
+        <option value="避電剪">火災-強制進入</option>
+        <option value="斧頭">火災-強制進入</option>
+        <option value="美式八角鎚">火災-強制進入</option>
+        <option value="雙節梯">火災-消防梯</option>
+        <option value="三聯梯(關東梯)">火災-消防梯</option>
+        <option value="三節梯">火災-消防梯</option>
+        <option value="掛梯">火災-消防梯</option>
+        <option value="竹籠">火災-水源佔據</option>
+        <option value="濾網">火災-水源佔據</option>
+        <option value="4吋雙母接頭">火災-水源佔據</option>
+        <option value="水帶護橋">火災-水源佔據</option>
+        <option value="進水軟管">火災-水源佔據</option>
+        <option value="移動式幫浦">火災-水源佔據</option>
+        <option value="消防栓開關把手">火災-水源佔據</option>
+        <option value="地下式消防栓立管">火災-水源佔據</option>
+        <option value="熱顯像儀">火災-滅火搜索</option>
+        <option value="渦輪瞄子">火災-滅火搜索</option>
+        <option value="分水器">火災-滅火搜索</option>
+        <option value="合水器">火災-滅火搜索</option>
+        <option value="射水砲塔">火災-滅火搜索</option>
+        <option value="可拆式朝天瞄">火災-滅火搜索</option>
+        <option value="導光索">火災-滅火搜索</option>
+        <option value="高樓佈線包">火災-滅火搜索</option>
+        <option value="定位拉力繩">火災-滅火搜索</option>
+        <option value="定位水帶環">火災-滅火搜索</option>
+        <option value="引導主繩">火災-滅火搜索</option>
+        <option value="消防救災用底盤瞄子">火災-滅火搜索</option>
+        <option value="防火毯">火災-滅火搜索</option>
+        <option value="排煙機">火災-通風排煙</option>
+        <option value="AIRBAG">火災-人員救援</option>
+        <option value="緊急救援板">火災-人員救援</option>
+        <option value="氣瓶">火災-後勤器材</option>
+        <option value="發電機">火災-後勤器材</option>
+        <option value="環場照明燈">火災-後勤器材</option>
+        <option value="照明燈">火災-後勤器材</option>
+        <option value="空拍機">火災-後勤器材</option>
+        <option value="大聲公">火災-後勤器材</option>
+        <option value="過載保護電纜捲盤">火災-後勤器材</option>
+        <option value="防水擋板">火災-後勤器材</option>
+        <option value="電動車快速搶救水袋">火災-後勤器材</option>
 
         <!-- 化災類 -->
-        <optgroup label="化災-重複性使用防護裝備">
-          <option value="防護衣(重複使用)">防護衣(重複使用)</option>
-          <option value="抗化靴">抗化靴</option>
-          <option value="耐化圍裙">耐化圍裙</option>
-        </optgroup>
-
-        <optgroup label="化災-危害辨識">
-          <option value="ERG">ERG</option>
-          <option value="檢知管">檢知管</option>
-          <option value="望遠鏡">望遠鏡</option>
-          <option value="化學品溶劑偵檢儀">化學品溶劑偵檢儀</option>
-          <option value="五用氣體探測器">五用氣體探測器</option>
-          <option value="可燃性氣體偵檢器">可燃性氣體偵檢器</option>
-          <option value="輻射偵檢器">輻射偵檢器</option>
-        </optgroup>
-
-        <optgroup label="化災-穩定現場/攻擊">
-          <option value="泡沫發生器">泡沫發生器</option>
-          <option value="泡沫瞄子">泡沫瞄子</option>
-          <option value="消防機器人">消防機器人</option>
-        </optgroup>
-
-        <optgroup label="化災-除汙作業">
-          <option value="除汙棚">除汙棚</option>
-          <option value="除汙刷">除汙刷</option>
-          <option value="儲汙桶">儲汙桶</option>
-        </optgroup>
+        <option value="防護衣(重複使用)">化災-防護裝備</option>
+        <option value="抗化靴">化災-防護裝備</option>
+        <option value="耐化圍裙">化災-防護裝備</option>
+        <option value="ERG">化災-危害辨識</option>
+        <option value="檢知管">化災-危害辨識</option>
+        <option value="望遠鏡">化災-危害辨識</option>
+        <option value="化學品溶劑偵檢儀">化災-危害辨識</option>
+        <option value="五用氣體探測器">化災-危害辨識</option>
+        <option value="可燃性氣體偵檢器">化災-危害辨識</option>
+        <option value="輻射偵檢器">化災-危害辨識</option>
+        <option value="泡沫發生器">化災-穩定現場</option>
+        <option value="泡沫瞄子">化災-穩定現場</option>
+        <option value="消防機器人">化災-穩定現場</option>
+        <option value="除汙棚">化災-除汙作業</option>
+        <option value="除汙刷">化災-除汙作業</option>
+        <option value="儲汙桶">化災-除汙作業</option>
 
         <!-- 車禍類 -->
-        <optgroup label="車禍-工具包">
-          <option value="口罩">口罩</option>
-          <option value="鏟刀">鏟刀</option>
-          <option value="安全帶切割器">安全帶切割器</option>
-          <option value="電線剪">電線剪</option>
-          <option value="氣嘴拆卸起子">氣嘴拆卸起子</option>
-          <option value="手鎚">手鎚</option>
-          <option value="飾板檢查撬棒">飾板檢查撬棒</option>
-          <option value="中心衝">中心衝</option>
-          <option value="門把塞">門把塞</option>
-        </optgroup>
-
-        <optgroup label="車禍-區域建立">
-          <option value="地墊(器材區、回收區)">地墊(器材區、回收區)</option>
-        </optgroup>
-
-        <optgroup label="車禍-車輛穩固-低位支撐">
-          <option value="墊塊組">墊塊組</option>
-          <option value="枕木">枕木</option>
-          <option value="電動車緊急插頭">電動車緊急插頭</option>
-        </optgroup>
-
-        <optgroup label="車禍-車輛穩固-中位支撐">
-          <option value="快速支撐桿">快速支撐桿</option>
-          <option value="棘輪束帶">棘輪束帶</option>
-        </optgroup>
-
-        <optgroup label="車禍-車輛穩固-高位支撐">
-          <option value="氣壓式支撐桿組">氣壓式支撐桿組</option>
-        </optgroup>
-
-        <optgroup label="車禍-車輛頂昇">
-          <option value="頂舉氣袋">頂舉氣袋</option>
-          <option value="手搖式千斤頂">手搖式千斤頂</option>
-        </optgroup>
-
-        <optgroup label="車禍-開創空間">
-          <option value="三用撬棒">三用撬棒</option>
-          <option value="圓盤切割器">圓盤切割器</option>
-          <option value="軍刀鋸">軍刀鋸</option>
-          <option value="砂輪機">砂輪機</option>
-          <option value="蜈蚣剪">蜈蚣剪</option>
-          <option value="撐開器">撐開器</option>
-          <option value="推頂桿">推頂桿</option>
-          <option value="油管及油壓幫浦">油管及油壓幫浦</option>
-          <option value="電池">電池</option>
-          <option value="三合一破壞器材">三合一破壞器材</option>
-          <option value="救援平台">救援平台</option>
-          <option value="鍊條(2M以上)">鍊條(2M以上)</option>
-        </optgroup>
-
-        <optgroup label="車禍-傷患保護">
-          <option value="安全氣囊防護罩">安全氣囊防護罩</option>
-          <option value="傷患保護板">傷患保護板</option>
-          <option value="傷患保護墊">傷患保護墊</option>
-          <option value="銳角保護墊">銳角保護墊</option>
-        </optgroup>
-
-        <optgroup label="車禍-傷患脫困">
-          <option value="車禍救助用長短背板">車禍救助用長短背板</option>
-        </optgroup>
+        <option value="口罩">車禍-工具包</option>
+        <option value="鏟刀">車禍-工具包</option>
+        <option value="安全帶切割器">車禍-工具包</option>
+        <option value="電線剪">車禍-工具包</option>
+        <option value="氣嘴拆卸起子">車禍-工具包</option>
+        <option value="手鎚">車禍-工具包</option>
+        <option value="飾板檢查撬棒">車禍-工具包</option>
+        <option value="中心衝">車禍-工具包</option>
+        <option value="門把塞">車禍-工具包</option>
+        <option value="地墊(器材區、回收區)">車禍-區域建立</option>
+        <option value="墊塊組">車禍-穩固低位</option>
+        <option value="枕木">車禍-穩固低位</option>
+        <option value="電動車緊急插頭">車禍-穩固低位</option>
+        <option value="快速支撐桿">車禍-穩固中位</option>
+        <option value="棘輪束帶">車禍-穩固中位</option>
+        <option value="氣壓式支撐桿組">車禍-穩固高位</option>
+        <option value="頂舉氣袋">車禍-車輛頂昇</option>
+        <option value="手搖式千斤頂">車禍-車輛頂昇</option>
+        <option value="砂輪機">車禍-開創空間</option>
+        <option value="蜈蚣剪">車禍-開創空間</option>
+        <option value="撐開器">車禍-開創空間</option>
+        <option value="推頂桿">車禍-開創空間</option>
+        <option value="油管及油壓幫浦">車禍-開創空間</option>
+        <option value="電池">車禍-開創空間</option>
+        <option value="三合一破壞器材">車禍-開創空間</option>
+        <option value="救援平台">車禍-開創空間</option>
+        <option value="鍊條(2M以上)">車禍-開創空間</option>
+        <option value="安全氣囊防護罩">車禍-傷患保護</option>
+        <option value="傷患保護板">車禍-傷患保護</option>
+        <option value="傷患保護墊">車禍-傷患保護</option>
+        <option value="銳角保護墊">車禍-傷患保護</option>
+        <option value="車禍救助用長短背板">車禍-傷患脫困</option>
 
         <!-- 其他類 -->
-        <optgroup label="其他-勤務類">
-          <option value="電瓶檢知器">電瓶檢知器</option>
-          <option value="物理高壓清洗機">物理高壓清洗機</option>
-          <option value="空壓機">空壓機</option>
-          <option value="拖船架">拖船架</option>
-          <option value="比托計">比托計</option>
-          <option value="空壓機(非灌充氣瓶)">空壓機(非灌充氣瓶)</option>
-          <option value="車輛電瓶充電器">車輛電瓶充電器</option>
-          <option value="車輛冷媒灌充機">車輛冷媒灌充機</option>
-          <option value="衝擊起子機">衝擊起子機</option>
-          <option value="電焊機">電焊機</option>
-          <option value="空氣呼吸器壓力測試儀">空氣呼吸器壓力測試儀</option>
-        </optgroup>
-
-        <optgroup label="其他-訓練類">
-          <option value="製煙機">製煙機</option>
-        </optgroup>
-      </select>
+        <option value="電瓶檢知器">其他-勤務類</option>
+        <option value="物理高壓清洗機">其他-勤務類</option>
+        <option value="空壓機">其他-勤務類</option>
+        <option value="拖船架">其他-勤務類</option>
+        <option value="比托計">其他-勤務類</option>
+        <option value="空壓機(非灌充氣瓶)">其他-勤務類</option>
+        <option value="車輛電瓶充電器">其他-勤務類</option>
+        <option value="車輛冷媒灌充機">其他-勤務類</option>
+        <option value="衝擊起子機">其他-勤務類</option>
+        <option value="電焊機">其他-勤務類</option>
+        <option value="空氣呼吸器壓力測試儀">其他-勤務類</option>
+        <option value="製煙機">其他-訓練類</option>
+      </datalist>
     </div>
 
     <div class="form-group">
@@ -293,7 +234,6 @@
 
     <div class="form-group">
       <label>現場拍照 (佐證)：</label>
-      <!-- 已加入 capture="environment" 優先開啟相機 -->
       <input type="file" name="equipment_image" accept="image/*" capture="environment" required>
     </div>
 
@@ -306,7 +246,6 @@
   </form>
 </div>
 
-<!-- 懸浮按鈕：傳送訊息給值班台 -->
 <div class="fab-btn" onclick="openMessageModal()">💬</div>
 <div id="message-modal">
   <div class="modal-content">
