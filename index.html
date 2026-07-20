@@ -12,16 +12,27 @@
     label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 15px; }
     input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: #f8f9fa; }
     input[type="file"] { width: 100%; padding: 10px 0; font-size: 15px; }
-    button { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    button { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; }
     button:disabled { background-color: #6c757d; cursor: not-allowed; }
     
-    /* 讓搜尋框的提示文字顏色淡一點 */
     input::-webkit-input-placeholder { color: #aaa; }
     
-    /* 平板上方推播通知 */
+    /* 懸浮推播 */
     #push-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 15px 30px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 16px; font-weight: bold; z-index: 1000; transition: top 0.4s ease; display: flex; align-items: center; gap: 10px; }
     #push-notification.show { top: 20px; }
 
+    /* 常駐成功提示區塊 */
+    .success-alert { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; font-weight: bold; text-align: center; font-size: 16px; }
+
+    /* 建檔紀錄區塊 */
+    .history-container { background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; }
+    .history-title { font-size: 18px; color: #4a4a4a; border-bottom: 2px solid #28a745; padding-bottom: 8px; margin-top: 0; display: flex; justify-content: space-between; align-items: center; }
+    .history-list { list-style: none; padding: 0; margin: 0; }
+    .history-list li { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .history-list li:last-child { border-bottom: none; }
+    .history-time { color: #888; font-size: 13px; min-width: 70px; }
+    .history-item { font-weight: bold; color: #333; flex-grow: 1; margin: 0 10px; }
+    
     /* 右下角傳送訊息按鈕 */
     .fab-btn { position: fixed; bottom: 30px; right: 30px; background-color: #dc3545; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(220,53,69,0.4); cursor: pointer; z-index: 999; font-size: 24px; }
     #message-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; justify-content: center; align-items: center; }
@@ -34,11 +45,11 @@
 
 <div id="push-notification"><span>🔔</span> <span id="notification-text">訊息</span></div>
 
+<!-- 裝備器材建檔表單 -->
 <div class="form-container">
   <h2>裝備器材建檔</h2>
   <form id="inventory-form">
     
-    <!-- 改為可搜尋的輸入框 (姓名) -->
     <div class="form-group">
       <label>填寫人員 (可搜尋)：</label>
       <input type="text" name="submitted_by" id="user_select" list="user_list" placeholder="請點擊輸入姓名..." required autocomplete="off">
@@ -74,7 +85,6 @@
       </datalist>
     </div>
 
-    <!-- 車輛數量較少，維持下拉選單較不易打錯字 -->
     <div class="form-group">
       <label>擺放車輛：</label>
       <select name="vehicle_name" required>
@@ -104,12 +114,10 @@
       <input type="text" name="placement_detail" placeholder="例如：第二層抽屜、座椅下方">
     </div>
 
-    <!-- 改為可搜尋的輸入框 (器材名稱) -->
     <div class="form-group">
       <label>器材項目 (可搜尋關鍵字)：</label>
       <input type="text" name="equipment_name" list="equipment_list" placeholder="請點擊輸入器材名稱..." required autocomplete="off">
       <datalist id="equipment_list">
-        
         <!-- 火災類 -->
         <option value="三用撬棒">火災-強制進入</option>
         <option value="圓盤切割器">火災-強制進入</option>
@@ -242,10 +250,28 @@
       <textarea name="remarks" rows="2" placeholder="例如：需要保養、有損壞..."></textarea>
     </div>
 
+    <!-- 常駐成功提示區塊 (預設隱藏) -->
+    <div id="success-alert" class="success-alert"></div>
+
     <button type="submit" id="submit-btn">確認建檔</button>
   </form>
 </div>
 
+<!-- 本機近期建檔紀錄區塊 -->
+<div class="history-container">
+  <h3 class="history-title">
+    本機近期建檔紀錄 
+    <span style="font-size: 13px; font-weight: normal; color: #888;">(僅顯示近 5 筆)</span>
+  </h3>
+  <ul class="history-list" id="history-list">
+    <li style="justify-content: center; color: #999;">尚無本機紀錄</li>
+  </ul>
+  
+  <!-- ★新增：導向後端管理網址的按鈕 -->
+  <button type="button" onclick="window.open('https://docs.google.com/spreadsheets/d/1qbtoDpM29Y-AG2ztnNSA7v-p4PV7bVfRo0UjmU2z1lE', '_blank')" style="background-color: #6c757d; margin-top: 20px; font-size: 16px;">📊 前往後端資料庫 (Google 試算表)</button>
+</div>
+
+<!-- 懸浮按鈕：傳送訊息給值班台 -->
 <div class="fab-btn" onclick="openMessageModal()">💬</div>
 <div id="message-modal">
   <div class="modal-content">
@@ -270,13 +296,45 @@
     setTimeout(() => push.classList.remove('show'), 3500);
   }
 
+  // 將紀錄加到列表的功能
+  function addHistoryRecord(time, equipment, quantity) {
+    const historyList = document.getElementById('history-list');
+    
+    // 如果裡面寫著「尚無紀錄」，就清空它
+    if (historyList.innerHTML.includes('尚無本機紀錄')) {
+      historyList.innerHTML = '';
+    }
+    
+    // 建立新的一行 <li>
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span class="history-time">[${time}]</span> 
+      <span class="history-item">${equipment}</span> 
+      <span style="color: #666;">x ${quantity}</span>
+    `;
+    
+    // 插入到列表的最上方
+    historyList.insertBefore(li, historyList.firstChild);
+    
+    // 保持最多只顯示 5 筆，超過就把最後一筆刪除
+    if (historyList.children.length > 5) {
+      historyList.removeChild(historyList.lastChild);
+    }
+  }
+
   document.getElementById('inventory-form').addEventListener('submit', e => {
     e.preventDefault();
     const btn = document.getElementById('submit-btn');
-    btn.textContent = '建檔中...'; btn.disabled = true;
+    const alertBox = document.getElementById('success-alert');
+    
+    // 按下送出時，先把上一次的成功提示隱藏
+    alertBox.style.display = 'none';
+    btn.textContent = '相片上傳與建檔中...'; 
+    btn.disabled = true;
 
     const file = document.querySelector('input[type="file"]').files[0];
     const reader = new FileReader();
+    
     reader.onload = ev => {
       const payload = {
         action: 'inventory',
@@ -296,9 +354,20 @@
           if(res.status === 'success') { 
             showPush('✅ 建檔成功！'); 
             
+            // 取得當前時間
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            
+            // 顯示常駐成功提示
+            alertBox.innerHTML = `✅ 上一筆成功建檔：<br><span style="color:#000;">${payload.equipment_name} (數量: ${payload.quantity})</span>`;
+            alertBox.style.display = 'block';
+
+            // 新增至下方建檔紀錄
+            addHistoryRecord(timeString, payload.equipment_name, payload.quantity);
+
             // 記錄當前選擇的人員與車輛
-            const currentUser = document.querySelector('[name="submitted_by"]').value;
-            const currentVehicle = document.querySelector('[name="vehicle_name"]').value;
+            const currentUser = payload.submitted_by;
+            const currentVehicle = payload.vehicle_name;
             
             // 清空表單
             document.getElementById('inventory-form').reset();
